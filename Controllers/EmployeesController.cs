@@ -42,7 +42,31 @@ namespace RestApi1.Controllers
             {
                 db.Employees.Add(emp);
                 db.SaveChanges();
-                return Ok("Työntekijä lisätty onnistuneesti" + emp.City);
+                return Ok("Työntekijä lisätty onnistuneesti" + emp.FirstName);
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Tapahtui virhe. Lue lisää:" + e.InnerException);
+            }
+        }
+
+        // Poista työntekijä
+        [HttpDelete("{id}")]
+        public ActionResult DeleteEmployee(int id)
+        {
+            try 
+            { 
+            var työntekijä = db.Employees.Find(id);
+            if (työntekijä != null)
+            {
+                db.Employees.Remove(työntekijä);
+                db.SaveChanges();
+                return Ok("Työntekijä " + työntekijä.FirstName + " poistettu");
+            }
+            else
+            {
+                return NotFound($"Työntekijää {id} ei löytynyt");
+            }
             }
             catch (Exception e)
             {

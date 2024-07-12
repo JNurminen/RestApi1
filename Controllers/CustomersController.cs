@@ -57,11 +57,35 @@ namespace RestApi1.Controllers
             {
                 db.Customers.Add(asiakas);
                 db.SaveChanges();
-                return Ok("Asiakas lisätty onnistuneesti" + asiakas.CompanyName);
+                return Ok("Asiakas lisätty onnistuneesti: " + asiakas.CompanyName);
             }
             catch (Exception e)
             {
                 return NotFound(e.Message);
+            }
+        }
+
+        // Poista asiakas
+        [HttpDelete("{id}")]
+        public ActionResult DeleteCustomer(string id)
+        {
+            try
+            {
+                var asiakas = db.Customers.Find(id);
+                if (asiakas != null) // Jos asiakas löytyy, poistetaan se
+                {
+                    db.Customers.Remove(asiakas);
+                    db.SaveChanges();
+                    return Ok("Asiakas poistettu onnistuneesti: " + asiakas.CompanyName);
+                }
+                else
+                {
+                    return NotFound($"Asiakasta {id} ei löytynyt");
+                }
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Tapahtui virhe. Lue lisää: " + e);
             }
         }
     }
