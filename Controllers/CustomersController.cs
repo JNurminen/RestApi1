@@ -15,8 +15,54 @@ namespace RestApi1.Controllers
         [HttpGet]
         public ActionResult GetAllCustomers()
         {
-            var asiakkaat = db.Customers.ToList();
-            return Ok(asiakkaat);
+            try
+            {
+                var asiakkaat = db.Customers.ToList();
+                return Ok(asiakkaat);
+            }
+            catch (Exception e)
+            {
+                return NotFound(e.Message);
+            }
+        }
+
+
+        // Hae yksi asiakas id:n perusteella  
+        [HttpGet("{id}")]
+        public ActionResult GetOneCustomerById(string id)
+        {
+            try
+            {
+                var asiakas = db.Customers.Find(id);
+                if (asiakas != null)
+                {
+                    return Ok(asiakas);
+                }
+                else
+                {
+                    return NotFound($"Asiakasta {id} ei löytynyt"); // string interpolation tapa
+                }
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Tapahtui virhe. Lue lisää: " + e);
+            }
+        }
+
+        // Lisää uusi asiakas
+        [HttpPost]
+        public ActionResult AddNew([FromBody] Customer asiakas)
+        {
+            try
+            {
+                db.Customers.Add(asiakas);
+                db.SaveChanges();
+                return Ok("Asiakas lisätty onnistuneesti" + asiakas.CompanyName);
+            }
+            catch (Exception e)
+            {
+                return NotFound(e.Message);
+            }
         }
     }
 }
