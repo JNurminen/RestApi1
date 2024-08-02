@@ -73,6 +73,57 @@ namespace RestApi1.Controllers
                 return BadRequest("Tapahtui virhe. Lue lisää:" + e.InnerException);
             }
         }
+
+        // Päivitä työntekijä
+        [HttpPut("{id}")]
+        public ActionResult UpdateEmployee(int id, [FromBody] Employee emp)
+        {
+            try
+            {
+                var työntekijä = db.Employees.Find(id);
+                if (työntekijä != null)
+                {
+                    työntekijä.FirstName = emp.FirstName;
+                    työntekijä.LastName = emp.LastName;
+                    työntekijä.Title = emp.Title;
+                    työntekijä.TitleOfCourtesy = emp.TitleOfCourtesy;
+                    työntekijä.BirthDate = emp.BirthDate;
+                    työntekijä.HireDate = emp.HireDate;
+                    työntekijä.Address = emp.Address;
+                    työntekijä.City = emp.City;
+                    työntekijä.Region = emp.Region;
+                    työntekijä.PostalCode = emp.PostalCode;
+                    työntekijä.Country = emp.Country;
+                    työntekijä.HomePhone = emp.HomePhone;
+                    työntekijä.Extension = emp.Extension;
+                    db.SaveChanges();
+                    return Ok("Työntekijän tiedot päivitetty onnistuneesti");
+                }
+                else
+                {
+                    return NotFound($"Työntekijää {id} ei löytynyt");
+                }
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Tapahtui virhe. Lue lisää:" + e.InnerException);
+            }
+        }
+
+        // Hae nimen osalla
+        [HttpGet("first/{fname}")]
+        public ActionResult GetEmployeeByName(string fname)
+        {
+            try
+            {
+                var työntekijät = db.Employees.Where(e => e.FirstName.Contains(fname));
+                return Ok(työntekijät);
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Tapahtui virhe. Lue lisää:" + e.InnerException);
+            }
+        }
     }
 }
 

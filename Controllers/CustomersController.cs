@@ -88,5 +88,55 @@ namespace RestApi1.Controllers
                 return BadRequest("Tapahtui virhe. Lue lisää: " + e);
             }
         }
+
+        // Päivitä asiakas
+        [HttpPut("{id}")]
+        public ActionResult UpdateCustomer(string id, [FromBody] Customer asiakas)
+        {
+            try
+            {
+                var updateAsiakas = db.Customers.Find(id);
+                if (updateAsiakas != null)
+                {
+                    updateAsiakas.CompanyName = asiakas.CompanyName;
+                    updateAsiakas.ContactName = asiakas.ContactName;
+                    updateAsiakas.Address = asiakas.Address;
+                    updateAsiakas.City = asiakas.City;
+                    updateAsiakas.Region = asiakas.Region;
+                    updateAsiakas.PostalCode = asiakas.PostalCode;
+                    updateAsiakas.Country = asiakas.Country;
+                    updateAsiakas.Phone = asiakas.Phone;
+                    updateAsiakas.Fax = asiakas.Fax;
+
+                    db.SaveChanges();
+                    return Ok("Asiakas päivitetty onnistuneesti: " + asiakas.CompanyName);
+                }
+                else
+                {
+                    return NotFound($"Asiakasta {id} ei löytynyt");
+                }
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Tapahtui virhe. Lue lisää: " + e);
+            }
+        }
+
+        // Hae nimen osalla
+        [HttpGet("companyname/{cname}")]
+        public ActionResult GetCustomerByName(string cname)
+        {
+            try
+            {
+                var asiakkaat = db.Customers.Where(c => c.CompanyName.Contains(cname));
+                // var asiakkaat = from c in db.Customers where c.CompanyName.Contains(cname) select c; <-- toinen tapa
+                // var asiakkaat = db.Customers.Where(c => c.CompanyName == cname); <-- tarkka haku
+                return Ok(asiakkaat);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Tapahtui virhe. Lue lisää: " + ex);
+            }
+        }
     }
 }
